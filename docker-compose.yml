@@ -1,0 +1,48 @@
+version: '3.1'
+
+services:
+
+  nginx:
+    container_name: gog_api
+    image: nginx:stable
+    ports:
+      - 80:80 # todo; Change this so that it takes it from environment
+      - 443:443
+    working_dir: /app
+    volumes:
+    - .:/app
+    - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  php:
+    container_name: php_api
+    build: ./docker/php
+    working_dir: /app
+    volumes:
+    - .:/app
+    - ./docker/php/php.ini:/usr/local/etc/conf.d/custom.ini
+    - $HOME/.composer/cache:/root/.composer/cache
+
+  php_ide_unit: # I was forced to do this because IntelliJ "eats the interpreter"
+    container_name: php_api_unit
+    build: ./docker/php
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ./docker/php/php.ini:/usr/local/etc/conf.d/custom.ini
+      - $HOME/.composer/cache:/root/.composer/cache
+
+  # TODO: Will I need redis?
+
+  db:
+    container_name: mysql_api
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: database
+    volumes:
+    - mysql-data:/data/mysql/db
+
+volumes:
+    mysql-data:
+      driver: local
