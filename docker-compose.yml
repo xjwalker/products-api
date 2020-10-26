@@ -31,15 +31,15 @@ services:
       - ./docker/php/php.ini:/usr/local/etc/conf.d/custom.ini
       - $HOME/.composer/cache:/root/.composer/cache
 
-  # TODO: Will I need redis?
-
   db:
     container_name: mysql_api
     image: mysql
     restart: always
+    ports:
+      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: database
+      MYSQL_ROOT_PASSWORD: 1234
     volumes:
     - mysql-data:/data/mysql/db
 
