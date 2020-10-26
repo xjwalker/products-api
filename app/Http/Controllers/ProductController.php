@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\DeleteProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\ProductRepository;
 
 class ProductController extends Controller
@@ -32,5 +33,11 @@ class ProductController extends Controller
         return response()->json(['data' => ['product' => $this->productRepository->delete($p)]]);
     }
 
+    public function update(UpdateProductRequest $request)
+    {
+        $p = $request->get('product');
+        $fields = $request->only(['title', 'price']);
+        return response()->json(['data' => ['product' => $this->productRepository->update($p, $fields)]]);
+    }
 
 }

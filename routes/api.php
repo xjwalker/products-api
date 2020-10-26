@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('product', [ProductController::class, 'create']);
 Route::delete('product', [ProductController::class, 'delete']);
+Route::patch('product', [ProductController::class, 'update']);

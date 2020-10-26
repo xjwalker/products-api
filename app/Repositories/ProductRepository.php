@@ -38,7 +38,6 @@ class ProductRepository
         return Product::where('title', $title)->first();
     }
 
-
     /**
      * @param Product $product
      * @return Product
@@ -52,4 +51,15 @@ class ProductRepository
         return $product;
     }
 
+    /**
+     * @param Product $product
+     * @param $fields
+     * @return Product
+     */
+    public function update(Product $product, $fields): Product
+    {
+        $product->update($fields);
+
+        return $product;
+    }
 }
