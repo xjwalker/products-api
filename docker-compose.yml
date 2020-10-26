@@ -6,7 +6,7 @@ services:
     container_name: gog_api
     image: nginx:stable
     ports:
-      - 80:80 # todo; Change this so that it takes it from environment
+      - 80:80
       - 443:443
     working_dir: /app
     volumes:

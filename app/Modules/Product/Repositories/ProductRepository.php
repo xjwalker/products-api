@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Modules\Product\ProductRepository;
 
 use App\Models\Product;
 
@@ -36,6 +36,14 @@ class ProductRepository
     public function getByTitle(string $title): ?Product
     {
         return Product::where('title', $title)->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|Product[]
+     */
+    public function get()
+    {
+        return Product::query()->get();
     }
 
     /**

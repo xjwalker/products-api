@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Exceptions\ValidationRuleException;
-use App\Repositories\ProductRepository;
+use App\Modules\Product\ProductRepository\ProductRepository;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
