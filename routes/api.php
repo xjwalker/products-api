@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('product', [ProductController::class, 'create']);
-Route::delete('product', [ProductController::class, 'delete']);
-Route::patch('product', [ProductController::class, 'update']);
-Route::get('product', [ProductController::class, 'get']);
+Route::group(['prefix' => 'product'], function () {
+    Route::post('/', [ProductController::class, 'create']);
+    Route::get('/', [ProductController::class, 'get']);
+    Route::patch('/', [ProductController::class, 'update']);
+    Route::delete('/', [ProductController::class, 'delete']);
+});

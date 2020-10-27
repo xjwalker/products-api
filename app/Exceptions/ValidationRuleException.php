@@ -50,5 +50,4 @@ class ValidationRuleException extends Exception
         }
         return $this->message;
     }
-
 }

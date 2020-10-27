@@ -3,22 +3,25 @@
 namespace App\Http\Requests;
 
 use App\Exceptions\ValidationRuleException;
-use App\Modules\Product\ProductRepository\ProductRepository;
-use Illuminate\Contracts\Validation\Validator;
+use App\Repositories\ProductRepository;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class CreateProductRequest extends FormRequest
 {
+
     /**
      * @var ProductRepository
      */
     private $productRepository;
 
+    /**
+     * CreateProductRequest constructor.
+     * @param ProductRepository $productRepository
+     */
     public function __construct(ProductRepository $productRepository)
     {
         parent::__construct();
         $this->productRepository = $productRepository;
-
     }
 
     /**
@@ -39,39 +42,33 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'bail|required|filled|string|max:120',
+            'price' => 'bail|numeric',
         ];
     }
 
     public function getValidatorInstance()
     {
         $validator = parent::getValidatorInstance();
-        $validator->after(function (Validator $validator) {
+        $validator->after(function ($validator) {
             if ($validator->errors()->count()) {
                 return;
             }
 
             $data = $validator->getData();
 
-            if (!isset($data['id']) || empty($data['id'])) {
-                throw new ValidationRuleException('id', 'required');
-            }
-            if ($data['id'] <= 0) {
-                throw new ValidationRuleException('id', 'integer');
-            }
-            $product = $this->productRepository->getById($data['id']);
-            if (is_null($product)) {
-                throw new ValidationRuleException('id', 'exists');
+            $product = $this->productRepository->getByTitle($data['title']);
+            if (!is_null($product)) {
+                throw new ValidationRuleException('title', 'unique');
             }
 
-            if (isset($data['price']) && $data['price'] < 0) {
+            if (is_null($data['price']) || !isset($data['price']) || empty($data['price'])) {
+                throw new ValidationRuleException('price', 'required');
+            }
+
+            if ($data['price'] < 0) {
                 throw new ValidationRuleException('price', 'invalid_price_value');
             }
-            if (isset($data['title']) && strlen($data['title']) > 120) {
-                throw new ValidationRuleException('title', 'max');
-            }
-
-            $this->request->add(['product' => $product]);
         });
 
         return $validator;

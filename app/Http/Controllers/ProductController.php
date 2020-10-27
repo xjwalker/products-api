@@ -4,18 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\DeleteProductRequest;
+use App\Http\Requests\GetProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Modules\Product\ProductRepository\ProductRepository;
+use App\Repositories\ProductRepository;
+use App\UseCases\GetPaginatedProducts;
 
 class ProductController extends Controller
 {
     private $productRepository;
+    /**
+     * @var GetPaginatedProducts
+     */
+    private $getPaginatedProducts;
 
-    public function __construct(ProductRepository $productRepository)
+    /**
+     * ProductController constructor.
+     * @param GetPaginatedProducts $getPaginatedProducts
+     * @param ProductRepository $productRepository
+     */
+    public function __construct(GetPaginatedProducts $getPaginatedProducts, ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
+        $this->getPaginatedProducts = $getPaginatedProducts;
     }
 
+    /**
+     * @param CreateProductRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(CreateProductRequest $request)
     {
         $fields = $request->only(['title', 'price']);
@@ -33,6 +49,10 @@ class ProductController extends Controller
         return response()->json(['data' => ['product' => $this->productRepository->delete($p)]]);
     }
 
+    /**
+     * @param UpdateProductRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(UpdateProductRequest $request)
     {
         $p = $request->get('product');
@@ -40,8 +60,13 @@ class ProductController extends Controller
         return response()->json(['data' => ['product' => $this->productRepository->update($p, $fields)]]);
     }
 
-    public function get()
+    /**
+     * @param GetProductRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get(GetProductRequest $request)
     {
-        return response()->json(['data' => [$this->productRepository->get()]]);
+        $lastId = $request->get('last_id');
+        return response()->json(['data' => $this->getPaginatedProducts->get($lastId)]);
     }
 }

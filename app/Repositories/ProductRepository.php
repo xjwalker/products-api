@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Product\ProductRepository;
+namespace App\Repositories;
 
 use App\Models\Product;
 
@@ -39,11 +39,21 @@ class ProductRepository
     }
 
     /**
+     * @param null $limit
+     * @param null $lastId
      * @return \Illuminate\Database\Eloquent\Collection|Product[]
      */
-    public function get()
+    public function get($limit = null, $lastId = null)
     {
-        return Product::query()->get();
+        $query = Product::query();
+        if ($limit) {
+            $query->limit($limit);
+        }
+        if ($lastId) {
+            $query->where('id', '>', $lastId);
+        }
+
+        return $query->orderBy('id', 'ASC')->get();
     }
 
     /**
