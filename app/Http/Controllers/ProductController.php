@@ -5,27 +5,43 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\DeleteProductRequest;
 use App\Http\Requests\GetProductRequest;
+use App\Http\Requests\GetSpecificProductsRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\ProductRepository;
 use App\UseCases\GetPaginatedProducts;
+use App\UseCases\GetSpecificProducts;
 
 class ProductController extends Controller
 {
+    /**
+     * @var ProductRepository
+     */
     private $productRepository;
+
     /**
      * @var GetPaginatedProducts
      */
     private $getPaginatedProducts;
 
     /**
+     * @var GetSpecificProducts
+     */
+    private $getSpecificProducts;
+
+    /**
      * ProductController constructor.
      * @param GetPaginatedProducts $getPaginatedProducts
+     * @param GetSpecificProducts $getSpecificProducts
      * @param ProductRepository $productRepository
      */
-    public function __construct(GetPaginatedProducts $getPaginatedProducts, ProductRepository $productRepository)
-    {
-        $this->productRepository = $productRepository;
+    public function __construct(
+        GetPaginatedProducts $getPaginatedProducts,
+        GetSpecificProducts $getSpecificProducts,
+        ProductRepository $productRepository
+    ) {
         $this->getPaginatedProducts = $getPaginatedProducts;
+        $this->getSpecificProducts = $getSpecificProducts;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -68,5 +84,14 @@ class ProductController extends Controller
     {
         $lastId = $request->get('last_id');
         return response()->json(['data' => $this->getPaginatedProducts->get($lastId)]);
+    }
+
+    /**
+     * @param GetSpecificProductsRequest $getSpecificProducts
+     * @return \App\Models\Product|\Illuminate\Support\Collection|null
+     */
+    public function getSpecificProducts(GetSpecificProductsRequest $getSpecificProducts)
+    {
+        return $this->getSpecificProducts->get($getSpecificProducts->only('products'));
     }
 }

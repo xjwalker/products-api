@@ -42,6 +42,8 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
     - mysql-data:/data/mysql/db
+    expose:
+        - "3306"
 
 volumes:
     mysql-data:

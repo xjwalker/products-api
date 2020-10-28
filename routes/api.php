@@ -19,4 +19,5 @@ Route::group(['prefix' => 'product'], function () {
     Route::get('/', [ProductController::class, 'get']);
     Route::patch('/', [ProductController::class, 'update']);
     Route::delete('/', [ProductController::class, 'delete']);
+    Route::get('/list', [ProductController::class, 'getSpecificProducts']);
 });

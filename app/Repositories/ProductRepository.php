@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Illuminate\Support\Collection;
 
 class ProductRepository
 {
@@ -21,12 +22,16 @@ class ProductRepository
     }
 
     /**
-     * @param int $id
-     * @return Product|null
+     * @param int|array $id
+     * @return Product|null|Collection
      */
-    public function getById(int $id): ?Product
+    public function getById($id)
     {
-        return Product::find($id);
+        if (is_int($id)) {
+            return Product::find($id);
+        }
+
+        return Product::whereIn('id', $id)->get();
     }
 
     /**
